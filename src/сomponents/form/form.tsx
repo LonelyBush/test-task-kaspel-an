@@ -1,18 +1,14 @@
-import {
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  type FormProps,
-} from 'antd';
+import { DatePicker, Form, Input, InputNumber, type FormProps } from 'antd';
 import { ButtonPrimary } from '../button/ButtonPrimary/ButtonPrimary';
-import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { addRow, editRow, resetKey } from '../../store/slices/tableDataSlices';
+import dayjs from 'dayjs';
 
 interface FieldType {
-  name?: string;
-  date?: string;
-  amount?: number;
+  name: string;
+  date: Date;
+  amount: number;
 }
 
 export const FormInput = ({
@@ -20,27 +16,50 @@ export const FormInput = ({
 }: {
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const store = useAppSelector((state) => state.tableData);
   const [form] = Form.useForm();
 
+  const dispatch = useAppDispatch();
+
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
-    message.success('Submit success!');
+    const formattedValues = {
+      ...values,
+      date: values.date.toISOString().split('T')[0],
+    };
+
+    const findData = store.data.find((item) => item.key === store.key);
+
+    if (store.key && findData) {
+      const editData = {
+        key: findData.key,
+        ...formattedValues,
+      };
+      dispatch(editRow({ ...editData }));
+      dispatch(resetKey());
+    } else {
+      dispatch(addRow(formattedValues));
+    }
     setIsModalOpen(false);
+    form.resetFields();
   };
 
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
-    errorInfo,
-  ) => {
-    console.log('Failed:', errorInfo);
-    message.error('Submit success!');
-  };
+  useEffect(() => {
+    const findData = store.data.find((item) => item.key === store.key);
+    if (store.key && findData) {
+      form.setFieldsValue({
+        ...findData,
+        date: dayjs(findData.date, 'YYYY-MM-DD'),
+      });
+    }
+  }, [form, store]);
+
   return (
     <Form
       name="basic"
+      layout="vertical"
       form={form}
       style={{ maxWidth: 600 }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
       <Form.Item<FieldType>
@@ -56,14 +75,14 @@ export const FormInput = ({
         name="date"
         rules={[{ required: true, message: 'Пожалуйста, введите дату' }]}
       >
-        <DatePicker />
+        <DatePicker style={{ width: '100%' }} format={'YYYY-MM-DD'} />
       </Form.Item>
       <Form.Item<FieldType>
         label="Cумма"
         name="amount"
         rules={[{ required: true, message: 'Пожалуйста, введите сумму' }]}
       >
-        <InputNumber />
+        <InputNumber style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item label={null}>
         <ButtonPrimary type="submit">Submit</ButtonPrimary>

@@ -1,25 +1,19 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ButtonIcon } from '../button/ButtonIcon/ButtonIcon';
 import { Flex, type TableColumnsType } from 'antd';
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  date: string;
-  amount: number;
-}
+import type { RowData } from '../../store/slices/tableDataSlices';
 
 interface GenerateTableColumnsProps {
-  mainCols: TableColumnsType<DataType>;
+  mainCols: TableColumnsType<RowData>;
   deleteAction: (key: React.Key) => void;
-  editAction: (key: React.Key) => void;
+  editAction: (data: RowData) => void;
 }
 
 export const generateTableColumns = ({
   mainCols,
   deleteAction,
   editAction,
-}: GenerateTableColumnsProps): TableColumnsType<DataType> => {
+}: GenerateTableColumnsProps): TableColumnsType<RowData> => {
   return [
     ...mainCols,
     {
@@ -30,7 +24,7 @@ export const generateTableColumns = ({
       render: (_, record) => (
         <Flex gap="small">
           <ButtonIcon
-            onClick={() => editAction(record.key)}
+            onClick={() => editAction(record)}
             icon={<EditOutlined />}
           />
           <ButtonIcon

@@ -4,9 +4,12 @@ import { TablePage } from './сomponents/table/table';
 import { useState } from 'react';
 import { ButtonPrimary } from './сomponents/button/ButtonPrimary/ButtonPrimary';
 import { FormInput } from './сomponents/form/form';
+import { useAppDispatch } from './store/hooks';
+import { resetKey } from './store/slices/tableDataSlices';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -18,12 +21,15 @@ function App() {
           <h2>Таблица</h2>
           <ButtonPrimary
             type="button"
-            onClick={() => setIsModalOpen(!isModalOpen)}
+            onClick={() => {
+              setIsModalOpen(!isModalOpen);
+              dispatch(resetKey());
+            }}
           >
             Добавить строку
           </ButtonPrimary>
         </Flex>
-        <TablePage />
+        <TablePage setIsModalOpen={setIsModalOpen} />
       </Flex>
       <Modal
         centered

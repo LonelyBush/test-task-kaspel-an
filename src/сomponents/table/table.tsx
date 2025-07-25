@@ -1,41 +1,27 @@
 import { Table } from 'antd';
-import { useState } from 'react';
 import { generateTableColumns } from './columns';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {
+  deleteRow,
+  updateKey,
+  type RowData,
+} from '../../store/slices/tableDataSlices';
+import type { Dispatch, SetStateAction } from 'react';
 
-const dataSource = [
-  {
-    key: '1',
-    id: 1,
-    name: 'Mike',
-    date: '16-04-2023',
-    amount: 10000,
-  },
-  {
-    key: '2',
-    id: 2,
-    name: 'John',
-    date: '17-04-2023',
-    amount: 20000,
-  },
-  {
-    key: '3',
-    id: 3,
-    name: 'Mark',
-    date: '18-04-2023',
-    amount: 15000,
-  },
-];
-
-export const TablePage = () => {
-  const [data, setData] = useState(dataSource);
+export const TablePage = ({
+  setIsModalOpen,
+}: {
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const data = useAppSelector((state) => state.tableData.data);
+  const dispatch = useAppDispatch();
 
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setData(newData);
+    dispatch(deleteRow(key));
   };
-  const handleEdit = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setData(newData);
+  const handleEdit = (data: RowData) => {
+    dispatch(updateKey(data.key));
+    setIsModalOpen(true);
   };
 
   return (
@@ -43,12 +29,6 @@ export const TablePage = () => {
       dataSource={data}
       columns={generateTableColumns({
         mainCols: [
-          {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-            width: 100,
-          },
           {
             title: 'Имя',
             dataIndex: 'name',
