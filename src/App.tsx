@@ -22,8 +22,8 @@ function App() {
           <ButtonPrimary
             type="button"
             onClick={() => {
-              setIsModalOpen(!isModalOpen);
               dispatch(resetKey());
+              setIsModalOpen(!isModalOpen);
             }}
           >
             Добавить строку

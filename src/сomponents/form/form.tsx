@@ -45,11 +45,14 @@ export const FormInput = ({
 
   useEffect(() => {
     const findData = store.data.find((item) => item.key === store.key);
+
     if (store.key && findData) {
       form.setFieldsValue({
         ...findData,
         date: dayjs(findData.date, 'YYYY-MM-DD'),
       });
+    } else {
+      form.resetFields();
     }
   }, [form, store]);
 

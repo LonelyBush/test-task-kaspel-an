@@ -6,7 +6,7 @@ import type { RowData } from '../../store/slices/tableDataSlices';
 interface GenerateTableColumnsProps {
   mainCols: TableColumnsType<RowData>;
   deleteAction: (key: React.Key) => void;
-  editAction: (data: RowData) => void;
+  editAction: (key: React.Key) => void;
 }
 
 export const generateTableColumns = ({
@@ -24,7 +24,7 @@ export const generateTableColumns = ({
       render: (_, record) => (
         <Flex gap="small">
           <ButtonIcon
-            onClick={() => editAction(record)}
+            onClick={() => editAction(record.key)}
             icon={<EditOutlined />}
           />
           <ButtonIcon
