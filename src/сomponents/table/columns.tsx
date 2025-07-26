@@ -17,7 +17,7 @@ export const generateTableColumns = ({
   return [
     ...mainCols,
     {
-      title: 'Action',
+      title: 'Действие',
       key: 'action',
       fixed: 'right',
       width: 100,
