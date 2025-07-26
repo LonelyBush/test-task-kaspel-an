@@ -88,7 +88,7 @@ export const FormInput = ({
         <InputNumber style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item label={null}>
-        <ButtonPrimary type="submit">Submit</ButtonPrimary>
+        <ButtonPrimary type="submit">Отправить</ButtonPrimary>
       </Form.Item>
     </Form>
   );
